@@ -6,6 +6,7 @@ function App() {
   const [state, setState] = useState(Array(9).fill(null));
   const [istrue, setIstrue] = useState(true);
   const [winner, setWinner] = useState(null);
+  const [tie, setTie] = useState(false); 
 
   const checkWinner = (squares) => {
     const winningConditions = [
@@ -29,7 +30,7 @@ function App() {
   };
 
   const handleClick = (index) => {
-    if (state[index] || winner) return;  
+    if (state[index] || winner || tie) return;
 
     const copystate = [...state];
     copystate[index] = istrue ? "X" : "O";
@@ -39,35 +40,50 @@ function App() {
     const gameWinner = checkWinner(copystate);
     if (gameWinner) {
       setWinner(gameWinner);
+    } else if (!copystate.includes(null)) {
+      setTie(true); // 
     }
   };
-function restartgame(){
-   setState(Array(9).fill(null))
-    setWinner(false);
+
+  function restartgame() {
+    setState(Array(9).fill(null));
+    setWinner(null);
+    setTie(false);
+    setIstrue(true);
   }
+
   return (
     <div className='square-items'>
-    {winner?(<>won the game  {winner}  <button onClick={()=>restartgame()}>restrat game</button>
-    </>):(<>
-      
-      <div className='board-items'>
-        <Square onClick={() => handleClick(0)} value={state[0]} />
-        <Square onClick={() => handleClick(1)} value={state[1]} />
-        <Square onClick={() => handleClick(2)} value={state[2]} />
-      </div>
-      <div className='board-items'>
-        <Square onClick={() => handleClick(3)} value={state[3]} />
-        <Square onClick={() => handleClick(4)} value={state[4]} />
-        <Square onClick={() => handleClick(5)} value={state[5]} />
-      </div>
-      <div className='board-items'>
-        <Square onClick={() => handleClick(6)} value={state[6]} />
-        <Square onClick={() => handleClick(7)} value={state[7]} />
-        <Square onClick={() => handleClick(8)} value={state[8]} />
-      </div>
-      </>)}
+      {winner ? (
+        <>
+          <p>🏆 Won the game: {winner}</p>
+          <button onClick={restartgame}>Restart Game</button>
+        </>
+      ) : tie ? (
+        <>
+          <p>🤝 It's a Tie!</p>
+          <button onClick={restartgame}>Restart Game</button>
+        </>
+      ) : (
+        <>
+          <div className='board-items'>
+            <Square onClick={() => handleClick(0)} value={state[0]} />
+            <Square onClick={() => handleClick(1)} value={state[1]} />
+            <Square onClick={() => handleClick(2)} value={state[2]} />
+          </div>
+          <div className='board-items'>
+            <Square onClick={() => handleClick(3)} value={state[3]} />
+            <Square onClick={() => handleClick(4)} value={state[4]} />
+            <Square onClick={() => handleClick(5)} value={state[5]} />
+          </div>
+          <div className='board-items'>
+            <Square onClick={() => handleClick(6)} value={state[6]} />
+            <Square onClick={() => handleClick(7)} value={state[7]} />
+            <Square onClick={() => handleClick(8)} value={state[8]} />
+          </div>
+        </>
+      )}
     </div>
-    
   );
 }
 
